@@ -24,7 +24,22 @@ let persons = [
   }
 ];
 
+app.get('/info', (req, res) =>
+  res.send('<p>Phonebook has info for people</p>')
+);
+
 app.get('/api/persons', (req, res) => res.json(persons));
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  const person = persons.find((pers) => {
+    console.log(pers.id, typeof pers.id, id, typeof id, pers.id === id);
+    return pers.id === id;
+  });
+  console.log(person);
+  res.json(person);
+});
 
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

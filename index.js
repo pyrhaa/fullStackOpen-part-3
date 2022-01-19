@@ -31,14 +31,15 @@ app.get('/info', (req, res) =>
 app.get('/api/persons', (req, res) => res.json(persons));
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
-  console.log(id);
+  const id = Number(req.params.id);
   const person = persons.find((pers) => {
-    console.log(pers.id, typeof pers.id, id, typeof id, pers.id === id);
     return pers.id === id;
   });
-  console.log(person);
-  res.json(person);
+  if (person) {
+    res.json(person);
+  } else {
+    res.status(404).end();
+  }
 });
 
 const PORT = 3001;

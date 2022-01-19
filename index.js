@@ -24,9 +24,13 @@ let persons = [
   }
 ];
 
-app.get('/info', (req, res) =>
-  res.send('<p>Phonebook has info for people</p>')
-);
+app.get('/info', (req, res) => {
+  const timeStamp = new Date();
+  const date = timeStamp.toTimeString();
+  res.send(
+    `<p>Phonebook has info for ${persons.length} people</p> <br> <p>${date}</p>`
+  );
+});
 
 app.get('/api/persons', (req, res) => res.json(persons));
 
@@ -38,7 +42,7 @@ app.get('/api/persons/:id', (req, res) => {
   if (person) {
     res.json(person);
   } else {
-    res.status(404).end();
+    res.status(404).end('Error 404: No person with this ID');
   }
 });
 

@@ -59,6 +59,10 @@ app.post('/api/persons', (req, res) => {
   const body = req.body;
   const randomId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 
+  if (!body.name || !body.number) {
+    return res.status(400).json({ error: 'name and number missing' });
+  }
+
   const person = {
     id: randomId,
     name: body.name,

@@ -2,8 +2,12 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 
-app.use(morgan('tiny'));
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+
 app.use(express.json());
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :body ')
+);
 
 let persons = [
   {
@@ -66,7 +70,9 @@ app.post('/api/persons', (req, res) => {
 
   if (!body.name || !body.number) {
     return res.status(400).json({ error: 'name and number missing' });
-  } else if (names) {
+  }
+
+  if (names.length > 0) {
     return res
       .status(406)
       .json({ error: 'Not acceptable: this name already exists' });

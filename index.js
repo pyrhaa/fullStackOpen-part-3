@@ -58,9 +58,16 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   const body = req.body;
   const randomId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+  const names = persons.filter(
+    (el) => el.name.toLowerCase() === body.name.toLowerCase()
+  );
 
   if (!body.name || !body.number) {
     return res.status(400).json({ error: 'name and number missing' });
+  } else if (names) {
+    return res
+      .status(406)
+      .json({ error: 'Not acceptable: this name already exists' });
   }
 
   const person = {

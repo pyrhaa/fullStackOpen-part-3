@@ -30,6 +30,9 @@ if (process.argv[3] && process.argv[4]) {
     );
     mongoose.connection.close();
   });
+} else if (process.argv.length < 5) {
+  console.log('Error: You must add a name and a number');
+  process.exit(1);
 } else {
   Person.find({}).then((res) => {
     console.log('phonebook:');

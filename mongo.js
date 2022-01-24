@@ -37,6 +37,6 @@ const Person = mongoose.model('Person', personSchema);
 
 Person.find({}).then((res) => {
   console.log('phonebook:');
-  res.forEach((person) => console.log(person));
+  res.forEach((person) => console.log(person.name, person.number));
   mongoose.connection.close();
 });

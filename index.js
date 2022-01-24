@@ -50,15 +50,14 @@ app.get('/api/persons', (req, res) => {
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find((pers) => {
-    return pers.id === id;
-  });
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end('Error 404: No person with this ID');
-  }
+  Person.findById(req.params.id)
+    .then((person) => {
+      res.json(person);
+    })
+    .catch((error) => {
+      res.status(404).end('Error 404: No person with this ID');
+      console.log(error.message);
+    });
 });
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -70,30 +69,19 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
-  const randomId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-  const names = persons.filter(
-    (el) => el.name.toLowerCase() === body.name.toLowerCase()
-  );
 
   if (!body.name || !body.number) {
     return res.status(400).json({ error: 'name and number missing' });
   }
 
-  if (names.length > 0) {
-    return res
-      .status(406)
-      .json({ error: 'Not acceptable: this name already exists' });
-  }
-
-  const person = {
-    id: randomId,
+  const person = new Person({
     name: body.name,
     number: body.number
-  };
+  });
 
-  persons = persons.concat(person);
-
-  res.json(person);
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
 });
 
 const unknownEndpoint = (req, res) => {

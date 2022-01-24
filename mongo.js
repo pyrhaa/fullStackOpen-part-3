@@ -19,12 +19,24 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model('Person', personSchema);
 
-const person = new Person({
-  name: 'Mary Poppins',
-  number: '39-23-642'
-});
+// if(process.argv[3] && process.argv[4]){
 
-person.save().then((res) => {
-  console.log('note saved!');
+// }else{
+
+// }
+
+// const person = new Person({
+//   name: 'Sarah Ait Tamazgha',
+//   number: '33-56-345'
+// });
+
+// person.save().then((res) => {
+//   console.log(`added ${} number ${} to phonebook`);
+//   mongoose.connection.close();
+// });
+
+Person.find({}).then((res) => {
+  console.log('phonebook:');
+  res.forEach((person) => console.log(person));
   mongoose.connection.close();
 });

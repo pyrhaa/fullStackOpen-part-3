@@ -24,13 +24,13 @@ if (process.argv[3] && process.argv[4]) {
     name: process.argv[3],
     number: process.argv[4]
   });
-  person.save().then((res) => {
+  person.save().then(() => {
     console.log(
       `added ${process.argv[3]} number ${process.argv[4]} to phonebook`
     );
     mongoose.connection.close();
   });
-} else if (process.argv.length < 5) {
+} else if (process.argv.length === 4) {
   console.log('Error: You must add a name and a number');
   process.exit(1);
 } else {

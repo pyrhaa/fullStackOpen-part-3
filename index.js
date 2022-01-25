@@ -60,15 +60,16 @@ app.get('/api/persons', (req, res) => {
   Person.find({}).then((persons) => res.json(persons));
 });
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
-      res.json(person);
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
     })
-    .catch((error) => {
-      res.status(404).end('Error 404: No person with this ID');
-      console.log(error.message);
-    });
+    .catch((error) => next(error));
 });
 
 app.delete('/api/persons/:id', (req, res) => {

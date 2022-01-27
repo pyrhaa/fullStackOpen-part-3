@@ -51,9 +51,11 @@ let persons = [
 app.get('/info', (req, res) => {
   const timeStamp = new Date();
   const date = timeStamp.toTimeString();
-  res.send(
-    `<p>Phonebook has info for ${persons.length} people</p> <br> <p>${date}</p>`
-  );
+  Person.find({}).then((persons) => {
+    res.send(
+      `<p>Phonebook has info for ${persons.length} people</p> <br> <p>${date}</p>`
+    );
+  });
 });
 
 app.get('/api/persons', (req, res) => {
@@ -97,7 +99,7 @@ app.post('/api/persons', (req, res) => {
   });
 });
 
-app.put('/api/persons:id', (req, res, next) => {
+app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body;
 
   const person = {
@@ -105,9 +107,9 @@ app.put('/api/persons:id', (req, res, next) => {
     number: body.number
   };
 
-  Person.findByIdAndUpdate(req.params.id, person, { new: true }).then(
-    (updatePerson) => res.json(updatePerson).catch((error) => next(error))
-  );
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then((updatePerson) => res.json(updatePerson))
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (req, res) => {

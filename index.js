@@ -11,11 +11,11 @@ app.use(express.static('build'));
 app.use(cors());
 app.use(express.json());
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, req, res, next) => {
   console.error(error.message);
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' });
+    return res.status(400).send({ error: 'malformatted id' });
   }
 
   next(error);
@@ -72,11 +72,12 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter((pers) => pers.id !== id);
-
-  res.status(204).end();
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post('/api/persons', (req, res) => {
@@ -96,8 +97,21 @@ app.post('/api/persons', (req, res) => {
   });
 });
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
+app.put('/api/persons:id', (req, res, next) => {
+  const body = req.body;
+
+  const person = {
+    name: body.name,
+    number: body.number
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true }).then(
+    (updatePerson) => res.json(updatePerson).catch((error) => next(error))
+  );
+});
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(unknownEndpoint);
